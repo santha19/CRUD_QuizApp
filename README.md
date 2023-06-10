@@ -7,7 +7,7 @@ The app has multiple pages and it is built in such a way that it will exit the a
 
 The multiple pages are as follows: 
 ---> Homepage 
----> Main Menu of Admin Quiz Application 
+---> Main Menu of Admin Quiz Application  
 ---> Admin Login Page 
 ---> User Registration Page 
 ---> User Login Page 
@@ -43,23 +43,26 @@ In admin pannel we can Add questions, Update questions, Delete questions, View q
  
       -----> Add question:
         When we enter the option 1 it will redirects to the Add Question page form Admin Pannel  to set the questions by the “Admin” to users. 
-      ![image](https://github.com/santha19/CRUD_QuizApp/assets/136115122/ef94934c-8ed5-49f7-b136-debfbb2c3c0d)
+        
+   ![image](https://github.com/santha19/CRUD_QuizApp/assets/136115122/5d9e9513-9ae3-4ae8-8c69-0b5113b10066)
+
 
      -----> Update question:
      When we enter the option 2 it will redirects to the Update Question from Admin Pannel to update the questions by the admin.
-     ![image](https://github.com/santha19/CRUD_QuizApp/assets/136115122/ab8403d7-e12c-40fa-951b-1aea0b17453e)
+     
+   ![image](https://github.com/santha19/CRUD_QuizApp/assets/136115122/ab8403d7-e12c-40fa-951b-1aea0b17453e)
      
         ------> Delete question:
         When we enter the option 3 it will redirects to the Delete Question from Admin Pannel to delete the questions by the admin. When we are trying to delete the question . It will ask the Question ID to delete the question by the admin. After entering the question ID it will delete that question which is created by admin.
-     ![image](https://github.com/santha19/CRUD_QuizApp/assets/136115122/0743a015-bf22-419b-8284-e463b155d0e1)
+  ![image](https://github.com/santha19/CRUD_QuizApp/assets/136115122/0743a015-bf22-419b-8284-e463b155d0e1)
 
       ------> View question:
       When we enter the option 4 it will redirects to the View Questions from Admin Pannel to view the questions to the admin which admin has set the questions to the user. 
-        ![image](https://github.com/santha19/CRUD_QuizApp/assets/136115122/9bd773f8-0d14-4339-b324-76ef21249343)
+ ![image](https://github.com/santha19/CRUD_QuizApp/assets/136115122/9bd773f8-0d14-4339-b324-76ef21249343)
         
     ------> User Report:
     When we enter the option 5 it will redirects to the user report from Admin Pannel to list the quiz taken by the user to the admin. The admin can check how many times user have taken the quiz by using “USER ID” to check. 
-    ![image](https://github.com/santha19/CRUD_QuizApp/assets/136115122/6151d719-84e4-4d6d-8314-2ab91c762cde)
+ ![image](https://github.com/santha19/CRUD_QuizApp/assets/136115122/6151d719-84e4-4d6d-8314-2ab91c762cde)
 
    -----> Logout from admin pannel:
     When we enter the option 6 it will redirects to the Logout page from Admin Pannel . The logout option is to exit the page from “ADMIN PANNEL” after setting the all options by the Admin. 
