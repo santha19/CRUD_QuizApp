@@ -1,0 +1,274 @@
+import pymysql
+
+# Connect to MySQL database
+connection = pymysql.connect(
+    host='localhost',
+    user='root',
+    password='Santhakumar@19',
+    database='quizapp'
+)
+
+# Create a cursor object to interact with the database
+cursor = connection.cursor()
+
+# Function to execute a MySQL query
+def execute_query(query):
+    cursor.execute(query)
+    connection.commit()
+
+# Function to fetch all rows from a MySQL query
+def fetch_all(query):
+    cursor.execute(query)
+    return cursor.fetchall()
+
+# Function to fetch a single row from a MySQL query
+def fetch_one(query):
+    cursor.execute(query)
+    return cursor.fetchone()
+
+# Function to create the admin table
+def create_admin_table():
+    query = '''
+    CREATE TABLE IF NOT EXISTS admin (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        username VARCHAR(50) NOT NULL,
+        password VARCHAR(50) NOT NULL
+    )
+    '''
+    execute_query(query)
+
+# Function to create the user table
+def create_user_table():
+    query = '''
+    CREATE TABLE IF NOT EXISTS user (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        username VARCHAR(50) NOT NULL,
+        password VARCHAR(50) NOT NULL
+    )
+    '''
+    execute_query(query)
+
+# Function to create the question table
+def create_question_table():
+    query = '''
+    CREATE TABLE IF NOT EXISTS question (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        question_text VARCHAR(255) NOT NULL,
+        correct_answer VARCHAR(255) NOT NULL
+    )
+    '''
+    execute_query(query)
+
+# Function to create the user_answer table
+def create_user_answer_table():
+    query = '''
+    CREATE TABLE IF NOT EXISTS user_answer (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        user_id INT,
+        question_id INT,
+        user_answer VARCHAR(255) NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES user(id),
+        FOREIGN KEY (question_id) REFERENCES question(id)
+    )
+    '''
+    execute_query(query)
+
+# Function to create the quiz table
+def create_quiz_table():
+    query = '''
+    CREATE TABLE IF NOT EXISTS quiz (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        user_id INT,
+        score INT,
+        FOREIGN KEY (user_id) REFERENCES user(id)
+    )
+    '''
+    execute_query(query)
+
+# Function to register an admin
+def register_admin(username, password):
+    query = f"INSERT INTO admin (username, password) VALUES ('{username}', '{password}')"
+    execute_query(query)
+    print("Admin registered successfully!")
+
+# Function to login as an admin
+def admin_login(username, password):
+    query = f"SELECT * FROM admin WHERE username = '{username}' AND password = '{password}'"
+    result = fetch_one(query)
+    if result:
+        print("Admin login successful!")
+        return True
+    else:
+        print("Invalid credentials!")
+        return False
+
+# Function to add a question
+def add_question(question_text, correct_answer):
+    query = f"INSERT INTO question (question_text, correct_answer) VALUES ('{question_text}', '{correct_answer}')"
+    execute_query(query)
+    print("Question added successfully!")
+
+# Function to update a question
+def update_question(question_id, question_text, correct_answer):
+    query = f"UPDATE question SET question_text = '{question_text}', correct_answer = '{correct_answer}' WHERE id = {question_id}"
+    execute_query(query)
+    print("Question updated successfully!")
+
+# Function to delete a question
+def delete_question(question_id):
+    query = f"DELETE FROM question WHERE id = {question_id}"
+    execute_query(query)
+    print("Question deleted successfully!")
+
+# Function to view all questions
+def view_questions():
+    query = "SELECT * FROM question"
+    questions = fetch_all(query)
+    if questions:
+        for question in questions:
+            print(f"ID: {question[0]}, Question: {question[1]}, Correct Answer: {question[2]}")
+    else:
+        print("No questions found.")
+
+# Function to register a user
+def register_user(username, password):
+    query = f"INSERT INTO user (username, password) VALUES ('{username}', '{password}')"
+    execute_query(query)
+    print("User registered successfully!")
+
+# Function to login as a user
+def user_login(username, password):
+    query = f"SELECT * FROM user WHERE username = '{username}' AND password = '{password}'"
+    result = fetch_one(query)
+    if result:
+        print("User login successful!")
+        return result[0]  # Return the user ID
+    else:
+        print("Invalid credentials!")
+        return None
+
+# Function to take a quiz
+def take_quiz(user_id):
+    query = "SELECT * FROM question"
+    questions = fetch_all(query)
+    if questions:
+        score = 0
+        for question in questions:
+            print(f"Question: {question[1]}")
+            user_answer = input("Your answer: ")
+            query = f"INSERT INTO user_answer (user_id, question_id, user_answer) VALUES ({user_id}, {question[0]}, '{user_answer}')"
+            execute_query(query)
+            if user_answer.lower() == question[2].lower():
+                score += 1
+        query = f"INSERT INTO quiz (user_id, score) VALUES ({user_id}, {score})"
+        execute_query(query)
+        print(f"Quiz submitted. Your score: {score}/{len(questions)}")
+    else:
+        print("No questions found.")
+
+# Function to display user quiz results
+def display_results(user_id):
+    query = f"SELECT * FROM quiz WHERE user_id = {user_id}"
+    quizzes = fetch_all(query)
+    if quizzes:
+        for quiz in quizzes:
+            print(f"Quiz ID: {quiz[0]}, Score: {quiz[2]}/{len(fetch_all('SELECT * FROM question'))}")
+    else:
+        print("No quizzes found.")
+
+# Main program loop
+if __name__ == '__main__':
+    create_admin_table()
+    create_user_table()
+    create_question_table()
+    create_user_answer_table()
+    create_quiz_table()
+
+    while True:
+        print("\n***** QUIZ APPLICATION *****")
+        print("1. Admin Login")
+        print("2. User Registration")
+        print("3. User Login")
+        print("4. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            username = input("Enter admin username: ")
+            password = input("Enter admin password: ")
+            if admin_login(username, password):
+                while True:
+                    print("\n***** ADMIN PANEL *****")
+                    print("1. Add Question")
+                    print("2. Update Question")
+                    print("3. Delete Question")
+                    print("4. View Questions")
+                    print("5. List of Quiz Taken User Report")
+                    print("6. Logout")
+
+                    admin_choice = input("Enter your choice: ")
+
+                    if admin_choice == "1":
+                        question_text = input("Enter the question: ")
+                        correct_answer = input("Enter the correct answer: ")
+                        add_question(question_text, correct_answer)
+
+                    elif admin_choice == "2":
+                        question_id = input("Enter the question ID to update: ")
+                        question_text = input("Enter the updated question: ")
+                        correct_answer = input("Enter the updated correct answer: ")
+                        update_question(question_id, question_text, correct_answer)
+
+                    elif admin_choice == "3":
+                        question_id = input("Enter the question ID to delete: ")
+                        delete_question(question_id)
+
+                    elif admin_choice == "4":
+                        view_questions()
+
+                    elif admin_choice == "5":
+                        user_id = input("Enter the user ID to results: ")
+                        display_results(user_id)
+
+                    elif admin_choice == "6":
+                        break
+
+                    else:
+                        print("Invalid choice. Try again.")
+
+        elif choice == "2":
+            username = input("Enter username: ")
+            password = input("Enter password: ")
+            register_user(username, password)
+
+        elif choice == "3":
+            username = input("Enter username: ")
+            password = input("Enter password: ")
+            user_id = user_login(username, password)
+            if user_id:
+                while True:
+                    print("\n***** USER PANEL *****")
+                    print("1. Take Quiz")
+                    print("2. Display Quiz Results")
+                    print("3. Logout")
+
+                    user_choice = input("Enter your choice: ")
+
+                    if user_choice == "1":
+                        take_quiz(user_id)
+
+                    elif user_choice == "2":
+                        display_results(user_id)
+
+                    elif user_choice == "3":
+                        break
+
+                    else:
+                        print("Invalid choice. Try again.")
+
+        elif choice == "4":
+            print("Thank you for using the Quiz Application. Goodbye!")
+            break
+
+        else:
+            print("Invalid choice. Try again.")
